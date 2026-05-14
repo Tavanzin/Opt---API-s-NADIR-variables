@@ -1,4 +1,4 @@
-import requests
+import httpx
 from auth import get_access_token
 
 evalscript = """
@@ -163,32 +163,38 @@ function evaluatePixel(sample, scene, metadata, customData, outputMetadata) {
 }
 """
 
-def get_lai(coordinates):
-    Token = get_access_token()
-    url = "https://sh.dataspace.copernicus.eu/api/v1/statistics"
-    header = {
-        "Authorization": f"Bearer {Token}",
-        "Content-Type": "application/json"
-    }
-    Payload = {
-        "input": {
-            "bounds": {
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [coordinates]
-                },
-                "properties": {"crs": "http://www.opengis.net/def/crs/EPSG/0/4326"}
-            },
-            "data": [{"type": "sentinel-2-l2a"}],
-        },
-        "aggregation": {
-            "timeRange": {
-                "from": "2025-01-01T00:00:00Z",
-                "to": "2025-02-01T00:00:00Z"
-            },
-            "aggregationInterval": {"of": "P1D"},
-            "evalscript": evalscript
-        }
-    }
-    response = requests.post(url=url, headers=header, json=Payload)
+async def get_lai(coordinates):
+    Token = await get_access_token()
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        response = await client.post(
+          url = "https://sh.dataspace.copernicus.eu/api/v1/statistics",
+
+          headers = {
+              "Authorization": f"Bearer {Token}",
+              "Content-Type": "application/json"
+          },
+
+          json = {
+              "input": {
+                  "bounds": {
+                      "geometry": {
+                          "type": "Polygon",
+                          "coordinates": [coordinates]
+                      },
+                      "properties": {"crs": "http://www.opengis.net/def/crs/EPSG/0/4326"}
+                  },
+                  "data": [{"type": "sentinel-2-l2a"}],
+              },
+              "aggregation": {
+                  "timeRange": {
+                      "from": "2025-01-01T00:00:00Z",
+                      "to": "2025-02-01T00:00:00Z"
+                  },
+                  "aggregationInterval": {"of": "P1D"},
+                  "evalscript": evalscript
+              }
+          }
+        )
+
     return response.json()
