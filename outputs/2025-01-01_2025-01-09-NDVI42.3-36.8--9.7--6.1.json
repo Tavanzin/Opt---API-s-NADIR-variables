@@ -1,0 +1,400 @@
+{
+    "noroeste": {
+        "data": [
+            {
+                "interval": {
+                    "from": "2025-01-01T00:00:00Z",
+                    "to": "2025-01-02T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.16937434970719398,
+                                    "stDev": 0.3930716012120937,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 12448
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-03T00:00:00Z",
+                    "to": "2025-01-04T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.1001499620607481,
+                                    "stDev": 0.19818410366769854,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 14182
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-06T00:00:00Z",
+                    "to": "2025-01-07T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.10729190274727518,
+                                    "stDev": 0.4340867605561739,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 12237
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-08T00:00:00Z",
+                    "to": "2025-01-09T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.05529806145070639,
+                                    "stDev": 0.19343843591852194,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 14388
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "status": "OK",
+        "geometryPixelCount": 65536
+    },
+    "nordeste": {
+        "data": [
+            {
+                "interval": {
+                    "from": "2025-01-01T00:00:00Z",
+                    "to": "2025-01-02T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -0.4391820728778839,
+                                    "max": 1.0,
+                                    "mean": 0.43282336773202296,
+                                    "stDev": 0.2560575851277879,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 64963
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-03T00:00:00Z",
+                    "to": "2025-01-04T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -0.6372367739677429,
+                                    "max": 1.0,
+                                    "mean": 0.06504416861042113,
+                                    "stDev": 0.0871679837535347,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 202
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-05T00:00:00Z",
+                    "to": "2025-01-06T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -0.5612648129463196,
+                                    "max": 1.0,
+                                    "mean": 0.01150958739270063,
+                                    "stDev": 0.04556563839284989,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 40538
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-06T00:00:00Z",
+                    "to": "2025-01-07T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -0.6200000047683716,
+                                    "max": 1.0,
+                                    "mean": 0.5397923685949231,
+                                    "stDev": 0.25966197758673093,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 64915
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-08T00:00:00Z",
+                    "to": "2025-01-09T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.03391790019567614,
+                                    "stDev": 0.10491429700973509,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 202
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "status": "OK",
+        "geometryPixelCount": 65536
+    },
+    "sudoeste": {
+        "data": [
+            {
+                "interval": {
+                    "from": "2025-01-01T00:00:00Z",
+                    "to": "2025-01-02T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": -0.11751677717070026,
+                                    "stDev": 0.5875956891255029,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 47113
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-03T00:00:00Z",
+                    "to": "2025-01-04T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.14574928809067098,
+                                    "stDev": 0.27307856899276467,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 0
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-05T00:00:00Z",
+                    "to": "2025-01-06T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -0.32025420665740967,
+                                    "max": 0.6299746036529541,
+                                    "mean": 0.018699103989760116,
+                                    "stDev": 0.09307416064022049,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 65273
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-06T00:00:00Z",
+                    "to": "2025-01-07T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.11162126839228301,
+                                    "stDev": 0.4459403935574938,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 46832
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-08T00:00:00Z",
+                    "to": "2025-01-09T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.05057873789570929,
+                                    "stDev": 0.1258358277566858,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 0
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "status": "OK",
+        "geometryPixelCount": 65536
+    },
+    "sudeste": {
+        "data": [
+            {
+                "interval": {
+                    "from": "2025-01-03T00:00:00Z",
+                    "to": "2025-01-04T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.3457792087072006,
+                                    "stDev": 0.22950024485602538,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 21003
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-05T00:00:00Z",
+                    "to": "2025-01-06T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -0.7158435583114624,
+                                    "max": 1.0,
+                                    "mean": 0.030005098916605657,
+                                    "stDev": 0.08566189553283371,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 10834
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "interval": {
+                    "from": "2025-01-08T00:00:00Z",
+                    "to": "2025-01-09T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.1002586030125945,
+                                    "stDev": 0.17840218652055578,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 20985
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "status": "OK",
+        "geometryPixelCount": 65536
+    }
+}

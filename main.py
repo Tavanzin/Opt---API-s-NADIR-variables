@@ -41,7 +41,7 @@ async def call_script_ndvi(north: float = 42.3, south: float = 36.8, west: float
         data_inicio = data_fim = "Erro ao extrair datas"
 
     ### cria ficheiro .json e cria na pasta do programa
-    with open(f"outputs/{data_inicio}_{data_fim}-NDVI{north}-{south}-{west}-{east}.json", "w", encoding="utf-8") as f:
+    with open(f"outputs/{data_inicio}_{data_fim}-NDVI-{north}-{south}-{west}-{east}.json", "w", encoding="utf-8") as f:
        json.dump(responses, f, indent=4, ensure_ascii=False)
 
     return responses
@@ -103,7 +103,7 @@ async def call_script_lai(north: float = 42.3, south: float = 36.8, west: float 
         data_inicio = data_fim  = "Erro ao extrair datas"
 
 
-  with open(f"outputs/{data_inicio}_{data_fim}-lai-{north}-{south}-{west}-{east}", "w", encoding="utf-8") as f:
+  with open(f"outputs/{data_inicio}_{data_fim}-lai-{north}-{south}-{west}-{east}.json", "w", encoding="utf-8") as f:
      json.dump(responses, f, indent=4, ensure_ascii=False)
 
   return responses
@@ -117,28 +117,7 @@ async def call_script_dem():
 @app.get("/modis/data")
 async def call_script_modis(band: str = 'ET_500m', lat: float = 39.7, lon: float = -8.1, start_date: str = '2025001', end_date: str = '2025009'):
       response = get_modis(band, lat, lon, start_date, end_date)
-
-      subset = response.json().get("subset", [])
-      result = []
-
-      for item in subset:
-        values = item.get("data", [])
-
-        validValue = [v for v in values if v > -9000 & v < 32700]
-
-        if validValue:
-           mean = sum(validValue) / len(validValue)
-        
-        else:
-           mean = 0
-
-        result.append({
-           "calendar_date": item["calendar_date"],
-          "average_value": round(mean, 2),
-          "pixel_count": len(validValue)
-        })
-
-      return result
+      return response
 
 #lat: float = 39.7, lon: float = -8.1, start_date: str = "2025-01-01", end_date: str = "2025-01-31", product: str = "MOD16A2"
 @app.get("/modis/download")

@@ -51,7 +51,7 @@ async def get_ndvi(coordinates):
         "aggregation": {
           "timeRange": {
             "from": "2025-01-01T00:00:00Z",
-            "to": "2025-02-01T00:00:00Z"
+            "to": "2025-01-02T00:00:00Z"
           },
           "aggregationInterval": {"of": "P1D"},
           "evalscript": evalscript

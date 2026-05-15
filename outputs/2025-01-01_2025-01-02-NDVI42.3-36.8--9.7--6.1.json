@@ -1,0 +1,91 @@
+{
+    "noroeste": {
+        "data": [
+            {
+                "interval": {
+                    "from": "2025-01-01T00:00:00Z",
+                    "to": "2025-01-02T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": 0.16937434970719398,
+                                    "stDev": 0.3930716012120937,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 12448
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "status": "OK",
+        "geometryPixelCount": 65536
+    },
+    "nordeste": {
+        "data": [
+            {
+                "interval": {
+                    "from": "2025-01-01T00:00:00Z",
+                    "to": "2025-01-02T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -0.4391820728778839,
+                                    "max": 1.0,
+                                    "mean": 0.43282336773202296,
+                                    "stDev": 0.2560575851277879,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 64963
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "status": "OK",
+        "geometryPixelCount": 65536
+    },
+    "sudoeste": {
+        "data": [
+            {
+                "interval": {
+                    "from": "2025-01-01T00:00:00Z",
+                    "to": "2025-01-02T00:00:00Z"
+                },
+                "outputs": {
+                    "default": {
+                        "bands": {
+                            "B0": {
+                                "stats": {
+                                    "min": -1.0,
+                                    "max": 1.0,
+                                    "mean": -0.11751677717070026,
+                                    "stDev": 0.5875956891255029,
+                                    "sampleCount": 65536,
+                                    "noDataCount": 47113
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "status": "OK",
+        "geometryPixelCount": 65536
+    },
+    "sudeste": {
+        "data": [],
+        "status": "OK",
+        "geometryPixelCount": null
+    }
+}
