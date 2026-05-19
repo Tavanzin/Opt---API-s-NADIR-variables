@@ -1,7 +1,7 @@
 import httpx
 
-CLIENT_ID = "sh-f20ada3b-35dc-42c7-a279-2ef53e06c5b8"
-CLIENT_SECRET = "svZmZBPwFjwnX3GZGoJgugad0hzmANtM"
+CLIENT_ID = "<CLIENT_ID>"
+CLIENT_SECRET = "<CLIENT_SECRET>"
 
 async def get_access_token():
     async with httpx.AsyncClient() as client:
