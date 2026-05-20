@@ -1,8 +1,3 @@
-from auth.CopernicusAuth import get_Copernicus_accessToken
-from controllers.CopernicusController import add_month
-
-import httpx
-
 evalscript = """
 //VERSION=3 (auto-converted from 2)
 var degToRad = Math.PI / 180;
@@ -181,6 +176,11 @@ function evaluatePixel(sample, scene, metadata, customData, outputMetadata) {
   }
 }
 """
+
+from auth.CopernicusAuth import get_Copernicus_accessToken
+from controllers import add_month
+
+import httpx
 
 async def post_fapar(coordinates, start_date, end_date):
   ## add a month to ensure the request of the month
