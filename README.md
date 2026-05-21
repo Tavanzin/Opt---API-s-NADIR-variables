@@ -135,14 +135,13 @@ Retorna dados de evapotranspiração do produto MODIS MOD16A2 para um ponto espe
 
 | Parâmetro    | Tipo   | Default     | Exemplo            | Descrição                                    |
 |--------------|--------|-------------|--------------------|-----------------------------------------------|
-| `band`       | string | `ET_500m`   | `ET_500m`, `LE_500m` | Banda do produto MODIS a consultar          |
+| `band`       | string | `ET         | `ET, `LE`          | Banda do produto MODIS a consultar          |
 | `lat`        | float  | `39.7`      | `38.7`             | Latitude do ponto                             |
 | `lon`        | float  | `-8.1`      | `-9.1`             | Longitude do ponto                            |
 | `start_date` | string | `2025001`   | `2025001`          | Data de início em formato juliano (`YYYYDDD`) |
 | `end_date`   | string | `2025009`   | `2025009`          | Data de fim em formato juliano (`YYYYDDD`)    |
 
 > As datas usam o formato juliano: `2025001` = 1 de Janeiro de 2025, `2025032` = 1 de Fevereiro de 2025.
-
 
 ### Limite de tiles & Chunking automático
 

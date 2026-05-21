@@ -6,6 +6,12 @@ import asyncio
 from controllers.ModisController import fetch_modis, merge_responses, split_into_chunks
 
 async def get_modis(band: str, lat: float, lon: float, start_date: str, end_date: str) -> dict:
+  ## band: ET = ET_500m
+  if band == 'Et' or band == 'ET':
+    band = 'ET_500m'
+  elif band == 'Le' or band == 'LE':
+    band = 'LE_500m'
+  else:    raise ValueError("Band must be either 'ET' or 'Le'")
   ## O serviço MODIS tem um limite de 10 tiles por requisição, e cada tile cobre um período de 8 dias. 
   # Para garantir que a requisição seja bem-sucedida, é necessário dividir o intervalo total de datas em chunks menores que respeitem esse limite.
   chunks = split_into_chunks(start_date, end_date)
