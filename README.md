@@ -121,7 +121,7 @@ Retorna um GeoTIFF com o Modelo Digital de Elevação (DEM Copernicus 30m) para 
 | `west`       | float  | `-9.7`      | Longitude oeste da bounding box     |
 | `east`       | float  | `-6.1`      | Longitude este da bounding box      |
 
-Não precisa de datas pois a altura não muda com o tempo
+> Não precisa de datas pois a altura não muda com o tempo
 
 **Resposta:** `image/tiff`
 
@@ -142,6 +142,12 @@ Retorna dados de evapotranspiração do produto MODIS MOD16A2 para um ponto espe
 | `end_date`   | string | `2025009`   | `2025009`          | Data de fim em formato juliano (`YYYYDDD`)    |
 
 > As datas usam o formato juliano: `2025001` = 1 de Janeiro de 2025, `2025032` = 1 de Fevereiro de 2025.
+
+
+### Limite de tiles & Chunking automático
+
+A API MODIS limita cada request a **10 tiles (80 dias)**.  
+Se pedires mais, o sistema divide automaticamente e agrega tudo.
 
 ---
 

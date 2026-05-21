@@ -1,28 +1,29 @@
 import httpx
 import json
 import os
+import asyncio
 
-async def get_modis(band, lat, lon, start_date, end_date):
-  url = (
-        f"https://modis.ornl.gov/rst/api/v1/MOD16A2/subset?"
-        f"latitude={lat}&longitude={lon}"
-        f"&startDate=A{start_date}&endDate=A{end_date}"
-        f"&product=MOD16A2&band={band}"
-        f"&kmAboveBelow=5&kmLeftRight=5"
-    )
-  
+from controllers.ModisController import fetch_modis, merge_responses, split_into_chunks
+
+async def get_modis(band: str, lat: float, lon: float, start_date: str, end_date: str) -> dict:
+  ## O serviço MODIS tem um limite de 10 tiles por requisição, e cada tile cobre um período de 8 dias. 
+  # Para garantir que a requisição seja bem-sucedida, é necessário dividir o intervalo total de datas em chunks menores que respeitem esse limite.
+  chunks = split_into_chunks(start_date, end_date)
   async with httpx.AsyncClient() as client:
-     response = await client.get(url)
-    
-  data = response.json()
+    tasks = [
+      fetch_modis(client, band, lat, lon, start_date, end_date) ## monta a url para cada chunk e faz a requisição
+      for start_date, end_date in chunks
+    ]
+    responses = await asyncio.gather(*tasks)
 
-  pasta_destino = "outputs"
-  if not os.path.exists(pasta_destino):
-    os.makedirs(pasta_destino)
+  data = merge_responses(list(responses), start_date, end_date, band)
 
-  caminho_ficheiro = os.path.join(pasta_destino, f"{start_date}_{end_date}-{band}-{lat}_{lon}.json")
+  folder = "outputs"
+  if not os.path.exists(folder):
+    os.makedirs(folder)
 
-  with open(caminho_ficheiro, "w", encoding="utf-8") as f:
+  file_path = os.path.join(folder, f"modis_{band}_{lat}_{lon}_{start_date}_{end_date}.json")
+  with open(file_path, "w", encoding="utf-8") as f:
     json.dump(data, f, indent=4, ensure_ascii=False)
 
   return data
