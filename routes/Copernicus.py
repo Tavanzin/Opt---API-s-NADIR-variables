@@ -122,6 +122,7 @@ async def GetParams(north: float = 42.3, south: float = 36.8,
     )
 
 @router.get("/dem")
-async def callAPI():
-   demTiff = await post_dem()
-   return Response(content=demTiff, media_type="image/tiff")
+async def callAPI(north: float = 42.3, south: float = 36.8,
+                    west: float = -9.7, east: float = -6.1):
+   demTiff = await post_dem(north, south, west, east)
+   return Response(content=demTiff, media_type="image/tiff", headers={"Content-Disposition": f"attachment; filename={north}_{south}_{west}_{east}_dem.tiff"})

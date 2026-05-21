@@ -178,7 +178,7 @@ function evaluatePixel(sample, scene, metadata, customData, outputMetadata) {
 """
 
 from auth.CopernicusAuth import get_Copernicus_accessToken
-from controllers import add_month
+from controllers.CopernicusController import add_month
 
 import httpx
 

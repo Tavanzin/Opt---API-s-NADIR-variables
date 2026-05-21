@@ -16,7 +16,7 @@ function evaluatePixel(sample) {
 }
 """
 
-async def post_dem():
+async def post_dem(north, south, west, east):
     Token = await get_Copernicus_accessToken()
     
     url = "https://sh.dataspace.copernicus.eu/api/v1/process"
@@ -28,7 +28,7 @@ async def post_dem():
         "input": {
             "bounds": {
                 "properties": {"crs": "http://www.opengis.net/def/crs/OGC/1.3/CRS84"},
-                "bbox": [-9.7, 36.8, -6.1, 42.3]
+                "bbox": [west, south, east, north]
             },
             "data": [{
                 "type": "dem",
