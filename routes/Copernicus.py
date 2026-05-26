@@ -16,7 +16,7 @@ import asyncio
 router = APIRouter()
 
 @router.get("/ndvi")
-async def GetParams(north: float = 42.3, south: float = 36.8,
+async def get_ndvi(north: float = 42.3, south: float = 36.8,
                     west: float = -9.7, east: float = -6.1,
                     start_date :str = '2025-01', end_date :str = '2025-01'
                     ):
@@ -51,7 +51,7 @@ async def GetParams(north: float = 42.3, south: float = 36.8,
   )
 
 @router.get("/fapar")
-async def GetParams(north: float = 42.3, south: float = 36.8,
+async def get_fapar(north: float = 42.3, south: float = 36.8,
                     west: float = -9.7, east: float = -6.1,
                     start_date :str = '2025-01', end_date :str = '2025-01'
                     ):
@@ -87,7 +87,7 @@ async def GetParams(north: float = 42.3, south: float = 36.8,
   )
 
 @router.get("/lai")
-async def GetParams(north: float = 42.3, south: float = 36.8,
+async def get_lai(north: float = 42.3, south: float = 36.8,
                     west: float = -9.7, east: float = -6.1,
                     start_date :str = '2025-01', end_date :str = '2025-01'
                     ):
@@ -123,7 +123,7 @@ async def GetParams(north: float = 42.3, south: float = 36.8,
     )
 
 @router.get("/dem")
-async def callAPI(north: float = 42.3, south: float = 36.8,
+async def get_dem(north: float = 42.3, south: float = 36.8,
                     west: float = -9.7, east: float = -6.1):
    demTiff = await post_dem(north, south, west, east)
    return Response(content=demTiff, media_type="image/tiff", headers={"Content-Disposition": f"attachment; filename={north}_{south}_{west}_{east}_dem.tiff"})
@@ -132,7 +132,7 @@ async def callAPI(north: float = 42.3, south: float = 36.8,
 ### Endpoint de teste usando o modelo Copernicus para receber os parâmetros via JSON no corpo da requisição
 
 @router.post("/teste")
-async def teste(payload: Copernicus):
+async def post_copernicus_params(payload: Copernicus):
     if payload.variable == 'dem':
         demTiff = await post_dem(payload.bbox[0], payload.bbox[1], payload.bbox[2], payload.bbox[3])
         return Response(content=demTiff, media_type="image/tiff", headers={"Content-Disposition": f"attachment; filename={payload.bbox[0]}_{payload.bbox[1]}_{payload.bbox[2]}_{payload.bbox[3]}_dem.tiff"})
