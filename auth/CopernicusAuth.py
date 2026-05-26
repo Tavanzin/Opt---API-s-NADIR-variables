@@ -9,8 +9,6 @@ async def get_Copernicus_accessToken():
   client_id = os.getenv("COPERNICUS_CLIENT_ID")
   client_secret = os.getenv("COPERNICUS_CLIENT_SECRET")
 
-  print("asdawdad", client_secret)
-
   async with httpx.AsyncClient() as client:
     Token = await client.post(
       url = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",

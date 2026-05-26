@@ -12,7 +12,8 @@ API em Python com FastAPI para consulta de dados de satélite — índices de ve
 ├── auth/
 │   └── CopernicusAuth.py          # Autenticação OAuth Copernicus
 ├── controllers/
-│   └── CopernicusController.py    # Lógica de coordenadas e intervalos de datas
+│   ├── CopernicusController.py    # Lógica de coordenadas e intervalos de datas
+│   └── ModisController.py         # Lógica das datas e criação da url e request
 ├── routes/
 │   ├── Copernicus.py              # Rotas NDVI, FAPAR, LAI, DEM
 │   └── Modis.py                   # Rotas MODIS (evapotranspiração)
@@ -22,6 +23,9 @@ API em Python com FastAPI para consulta de dados de satélite — índices de ve
 │   ├── lai.py                     # Cálculo LAI via Sentinel-2
 │   ├── dem.py                     # Download DEM Copernicus 30m
 │   └── modis.py                   # Consulta MODIS MOD16A2
+├── schemas/
+│   ├── CoperniscusScema.py
+│   └── Et_Le.py
 └── Testes/
     └── teste.py
 ```
@@ -32,15 +36,6 @@ API em Python com FastAPI para consulta de dados de satélite — índices de ve
 
 - Python 3.10+
 - Conta na [Copernicus Data Space](https://dataspace.copernicus.eu/) (para NDVI, FAPAR, LAI, DEM)
-- Conta na [NASA Earthdata](https://urs.earthdata.nasa.gov/) (para MODIS)
-
-### Instalar dependências
-
-```bash
-pip install fastapi uvicorn python-dateutil
-```
-
----
 
 ## Credenciais
 
@@ -59,9 +54,6 @@ CLIENT_SECRET = "o-teu-client-secret"
 ```bash
 uvicorn main:app --reload
 ```
-
-A API ficará disponível em `http://localhost:8000`.  
-Documentação automática em `http://localhost:8000/docs`.
 
 ---
 
@@ -135,7 +127,7 @@ Retorna dados de evapotranspiração do produto MODIS MOD16A2 para um ponto espe
 
 | Parâmetro    | Tipo   | Default     | Exemplo            | Descrição                                    |
 |--------------|--------|-------------|--------------------|-----------------------------------------------|
-| `band`       | string | `ET         | `ET, `LE`          | Banda do produto MODIS a consultar          |
+| `band`       | string | `ET`         | `ET`, `LE`          | Banda do produto MODIS a consultar          |
 | `lat`        | float  | `39.7`      | `38.7`             | Latitude do ponto                             |
 | `lon`        | float  | `-8.1`      | `-9.1`             | Longitude do ponto                            |
 | `start_date` | string | `2025001`   | `2025001`          | Data de início em formato juliano (`YYYYDDD`) |
@@ -147,6 +139,75 @@ Retorna dados de evapotranspiração do produto MODIS MOD16A2 para um ponto espe
 
 A API MODIS limita cada request a **10 tiles (80 dias)**.  
 Se pedires mais, o sistema divide automaticamente e agrega tudo.
+
+---
+
+## POST Endpoints
+
+Os endpoints `POST /teste` são versões alternativas dos `GET` que aceitam os parâmetros via **JSON no corpo do request** em vez de query string. Útil para clientes que preferem enviar body JSON (ex: Postman, aplicações frontend).
+
+---
+
+### `POST /Copernicus/teste`
+
+Endpoint unificado que aceita qualquer variável Copernicus num único request. Em vez de ter rotas separadas para NDVI, FAPAR, LAI e DEM, escolhes a variável no campo `variable`.
+
+**Body (JSON):**
+
+| Campo        | Tipo        | Default                     | Descrição                                           |
+|--------------|-------------|-----------------------------|-----------------------------------------------------|
+| `variable`   | string      | `"ndvi"`                    | Variável a consultar: `ndvi`, `fapar`, `lai`, `dem` |
+| `bbox`       | list[float] | `[42.3, 36.8, -9.7, -6.1]` | Bounding box: `[north, south, west, east]`          |
+| `start_date` | string      | `"2025-01"`                 | Mês de início no formato `YYYY-MM`                  |
+| `end_date`   | string      | `"2025-02"`                 | Mês de fim no formato `YYYY-MM`                     |
+
+**Exemplo de request:**
+
+```json
+{
+  "variable": "ndvi",
+  "bbox": [42.3, 36.8, -9.7, -6.1],
+  "start_date": "2025-01",
+  "end_date": "2025-03"
+}
+```
+
+**Resposta:**
+- Se `variable` for `ndvi`, `fapar` ou `lai`: `application/zip` com GeoTIFFs nomeados `{quadrante}_{mês}_{variável}.tiff`
+- Se `variable` for `dem`: `image/tiff` diretamente
+- Se `variable` não for suportada: `400 Bad Request`
+
+---
+
+### `POST /Modis/teste`
+
+Versão POST do `GET /Modis`. Aceita os mesmos parâmetros via JSON. O chunking automático aplica-se da mesma forma.
+
+**Body (JSON):**
+
+| Campo        | Tipo   | Default     | Descrição                                                     |
+|--------------|--------|-------------|---------------------------------------------------------------|
+| `band`       | string | `"ET"`      | Banda MODIS: `ET` (evapotranspiração) ou `LE` (calor latente) |
+| `lat`        | float  | `39.7`      | Latitude do ponto                                             |
+| `lon`        | float  | `-8.1`      | Longitude do ponto                                            |
+| `start_date` | string | `"2025001"` | Data de início em formato juliano `YYYYDDD`                   |
+| `end_date`   | string | `"2025087"` | Data de fim em formato juliano `YYYYDDD`                      |
+
+**Exemplo de request:**
+
+```json
+{
+  "band": "LE",
+  "lat": 38.7,
+  "lon": -9.1,
+  "start_date": "2025001",
+  "end_date": "2025365"
+}
+```
+
+**Resposta:** JSON com os dados MODIS agregados para o intervalo completo.
+
+> Se o intervalo exceder 80 dias, os chunks são feitos automaticamente em paralelo — ver secção [Limite de tiles & Chunking automático](#limite-de-tiles--chunking-automático).
 
 ---
 
