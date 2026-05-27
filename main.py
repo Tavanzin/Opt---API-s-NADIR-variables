@@ -13,7 +13,7 @@ A área é automaticamente dividida em 4 quadrantes (NW, NE, SW, SE).
         """,
     },
     {
-        "name": "MODIS",
+        "name": "Modis",
         "description": """
 Endpoints para consulta de **evapotranspiração** e **latent heat flux** (produto MOD16A2).
 

@@ -16,6 +16,7 @@ def split_into_chunks(start_date: str, end_date: str) -> list[tuple[str, str]]:
   ## converte as datas de julian para datetime para facilitar a manipulação
   start = julian_to_date(start_date) 
   end = julian_to_date(end_date)
+  print(f"start: {start}, end: {end}")
 
   chunks = []
   chunk_start = start ## inicia o chunk no dia inicial da requisição

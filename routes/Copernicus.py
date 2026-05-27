@@ -1,5 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response, StreamingResponse
+from datetime import datetime, date
 import io
 import zipfile
 
@@ -18,7 +19,7 @@ router = APIRouter()
 @router.get("/ndvi")
 async def get_ndvi(north: float = 42.3, south: float = 36.8,
                     west: float = -9.7, east: float = -6.1,
-                    start_date :str = '2025-01', end_date :str = '2025-01'
+                    start_date :str = '2025-01', end_date :str = '2025-12'
                     ):
   raw_coordinates = get_coordinates(north, south, west, east)
   names = list(raw_coordinates.keys())
@@ -53,7 +54,7 @@ async def get_ndvi(north: float = 42.3, south: float = 36.8,
 @router.get("/fapar")
 async def get_fapar(north: float = 42.3, south: float = 36.8,
                     west: float = -9.7, east: float = -6.1,
-                    start_date :str = '2025-01', end_date :str = '2025-01'
+                    start_date :str = '2025-01', end_date :str = '2025-12'
                     ):
   raw_coordinates = get_coordinates(north, south, west, east)
   names = list(raw_coordinates.keys())
@@ -89,7 +90,7 @@ async def get_fapar(north: float = 42.3, south: float = 36.8,
 @router.get("/lai")
 async def get_lai(north: float = 42.3, south: float = 36.8,
                     west: float = -9.7, east: float = -6.1,
-                    start_date :str = '2025-01', end_date :str = '2025-01'
+                    start_date :str = '2025-01', end_date :str = '2025-12'
                     ):
     raw_coordinates = get_coordinates(north, south, west, east)
     names = list(raw_coordinates.keys())
@@ -133,6 +134,31 @@ async def get_dem(north: float = 42.3, south: float = 36.8,
 
 @router.post("/teste")
 async def post_copernicus_params(payload: Copernicus):
+    VARIAVEIS_SUPORTADAS = ['ndvi', 'fapar', 'lai', 'dem']
+
+    try:
+      data_inicio = datetime.strptime(payload.start_date, "%Y-%m").date()
+      data_fim = datetime.strptime(payload.end_date, "%Y-%m").date()
+    except ValueError:
+      raise HTTPException(
+        status_code=400,
+        detail=f"bad request"
+      )
+    
+    if (payload.variable not in VARIAVEIS_SUPORTADAS or 
+        payload.start_date > payload.end_date or 
+        data_inicio > date.today() or 
+        data_fim > date.today()  or
+        data_inicio.month < 1 or data_inicio.month > 12 or
+        data_fim.month < 1 or data_fim.month > 12 or
+        len(payload.bbox) != 4):
+      raise HTTPException(
+        status_code=400,
+        detail=f"bad request"
+      )
+      
+
+
     if payload.variable == 'dem':
         demTiff = await post_dem(payload.bbox[0], payload.bbox[1], payload.bbox[2], payload.bbox[3])
         return Response(content=demTiff, media_type="image/tiff", headers={"Content-Disposition": f"attachment; filename={payload.bbox[0]}_{payload.bbox[1]}_{payload.bbox[2]}_{payload.bbox[3]}_dem.tiff"})
@@ -149,19 +175,15 @@ async def post_copernicus_params(payload: Copernicus):
     for name, c in zip(names, coords):
         for month in months_interval:
             if payload.variable == 'ndvi':
-                print(f"Chamando post_ndvi para {name} no mês {month} com coordenadas {c}")
                 tasks.append(post_ndvi(c, start_date=month, end_date=month))
             elif payload.variable == 'fapar':
                 tasks.append(post_fapar(c, start_date=month, end_date=month))
             elif payload.variable == 'lai':
                 tasks.append(post_lai(c, start_date=month, end_date=month))
-            else:
-                return Response(content=f"Variável '{payload.variable}' não suportada. Use 'ndvi', 'fapar', 'lai' ou 'dem'.", status_code=400)
 
             data.append((name, month))
 
     responses = await asyncio.gather(*tasks)
-    print(f" Respostas: {responses}")
 
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zf:
