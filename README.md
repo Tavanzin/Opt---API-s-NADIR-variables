@@ -213,6 +213,36 @@ Também é uma alternativa para o `GET` mas não muda pois as duas variáveis es
 
 ---
 
+## Scripts
+
+Os scripts são responsáveis por montar e enviar o pedido ao SentinelHub/Copernicus com
+o evalscript correto para cada variável.
+
+#### `scripts/ndvi.py` — `post_ndvi(coordinates, start_date, end_date)`
+Calcula o NDVI com as bandas **B08** e **B04** do Sentinel-2 via a fórmula:
+`NDVI = (B08 - B04) / (B08 + B04)`
+
+#### `scripts/fapar.py` — `post_fapar(coordinates, start_date, end_date)`
+Calcula o FAPAR usando uma **rede neural de 5 neurónios** treinada pela ESA sobre
+as bandas B03, B04, B05, B06, B07, B8A, B11, B12 e ângulos de visão/sol.
+
+#### `scripts/lai.py` — `post_lai(coordinates, start_date, end_date)`
+Calcula o LAI com a mesma arquitetura de rede neural que o FAPAR mas com
+pesos diferentes — o resultado é normalizado por `/3` antes de ser devolvido.
+
+#### `scripts/dem.py` — `post_dem(north, south, west, east)`
+Pede o DEM **Copernicus 30m** e normaliza os valores de elevação dividindo por 2000
+para caber no intervalo `[0, 1]` do GeoTIFF.
+
+> Os três primeiros (`ndvi`, `fapar`, `lai`) usam `add_month(end_date)` antes de enviar
+> o pedido — isto garante que o mês pedido é coberto na totalidade pelo intervalo de datas.
+
+#### `scripts/Et_Le.py` — `get_modis(band, lat, lon, start_date, end_date)`
+Normaliza o nome da banda (`ET`/`et` → `ET_500m`, `LE`/`le` → `LE_500m`),
+chama `split_into_chunks` e agrega os resultados via `merge_responses`.
+
+---
+
 ## Autenticação
  
 ### `auth/CopernicusAuth.py`
