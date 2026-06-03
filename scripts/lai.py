@@ -1,3 +1,6 @@
+import httpx
+from auth import get_access_token
+
 evalscript = """
 //VERSION=3 (auto-converted from 2)
 var degToRad = Math.PI / 180;
@@ -160,61 +163,38 @@ function evaluatePixel(sample, scene, metadata, customData, outputMetadata) {
 }
 """
 
-from auth.CopernicusAuth import get_Copernicus_accessToken
+async def get_lai(coordinates):
+    Token = await get_access_token()
 
-from controllers.CopernicusController import add_month
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        response = await client.post(
+          url = "https://sh.dataspace.copernicus.eu/api/v1/statistics",
 
-import httpx
-
-async def post_lai(coordinates, start_date, end_date):
-  ## add a month to ensure the request of the month
-  end_date = add_month(end_date)
-
-  Token = await get_Copernicus_accessToken()
-  
-  async with httpx.AsyncClient(timeout=60.0) as client:
-    response = await client.post(
-      url = "https://sh.dataspace.copernicus.eu/api/v1/process",
-
-      headers = {
-        "Authorization": f"Bearer {Token}",
-        "Content-Type": "application/json",
-        "Accept": "image/tiff"
-      },
-
-      json = {
-        "input": {
-          "bounds": {
-            "geometry": {
-              "type": "Polygon",
-              "coordinates": [coordinates]
-            },
-            "properties": { "crs": "http://www.opengis.net/def/crs/EPSG/0/4326" },
+          headers = {
+              "Authorization": f"Bearer {Token}",
+              "Content-Type": "application/json"
           },
-          "data": [{
-            "type": "sentinel-2-l2a",
-            "dataFilter": {
-              "timeRange": {
-                "from": f"{start_date}-01T00:00:00Z",
-                "to": f"{end_date}-01T00:00:00Z"
+
+          json = {
+              "input": {
+                  "bounds": {
+                      "geometry": {
+                          "type": "Polygon",
+                          "coordinates": [coordinates]
+                      },
+                      "properties": {"crs": "http://www.opengis.net/def/crs/EPSG/0/4326"}
+                  },
+                  "data": [{"type": "sentinel-2-l2a"}],
+              },
+              "aggregation": {
+                  "timeRange": {
+                      "from": "2025-01-01T00:00:00Z",
+                      "to": "2025-02-01T00:00:00Z"
+                  },
+                  "aggregationInterval": {"of": "P1D"},
+                  "evalscript": evalscript
               }
-            }
-          }]
-        },
-        "output": {
-          "width": 512,
-          "height": 512,
-          "responses": [
-            {
-            "identifier": "default",
-              "format": {
-                "type": "image/tiff"
-              } 
-            }
-          ]
-        },
-        "evalscript": evalscript
-        }
-    )
-    
-  return response.content
+          }
+        )
+
+    return response.json()
