@@ -4,24 +4,19 @@ from controllers.CopernicusController import add_month
 import httpx
 
 evalscript = """
-///VERSION=3
+//VERSION=3
 function setup() {
-  return {
-    input: ["B08", "B04", "dataMask"],
-    output: [
-    { id: "default", bands: 1, sampleType: "FLOAT32"},
-    { id: "dataMask", bands: 1 }
-    ]
-  }
+    return {
+        input: ["B04", "B08", "dataMask", "SCL"],
+        output: { bands: 1, sampleType: "FLOAT32" }
+    };
 }
-
-function evaluatePixel(sample){
-  let ndvi = index(sample.B08, sample.B04)
-
-  return {
-  default: [ndvi],
-  dataMask: [sample.dataMask]
-  }
+function evaluatePixel(sample) {
+    if (sample.dataMask !== 1 || [3, 8, 9, 10, 11].includes(sample.SCL)) {
+        return [NaN];
+    }
+    let val = index(sample.B08, sample.B04);
+    return [val];
 }
 """
 
@@ -56,7 +51,9 @@ async def post_ndvi(coordinates, start_date, end_date):
               "timeRange": {
                 "from": f"{start_date}-01T00:00:00Z",
                 "to": f"{end_date}-01T00:00:00Z"
-              }
+              },
+              "maxCloudCoverage": 30,
+              "mosaickingOrder": "leastCC",
             }
           }]
         },

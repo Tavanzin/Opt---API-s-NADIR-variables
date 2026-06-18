@@ -1,5 +1,7 @@
 import httpx
-from auth import get_access_token
+import logging
+from auth.CopernicusAuth import get_Copernicus_accessToken
+from controllers.CopernicusController import add_month
 
 evalscript = """
 //VERSION=3 (auto-converted from 2)
@@ -7,6 +9,11 @@ var degToRad = Math.PI / 180;
 
 function evaluatePixelOrig(samples) {
   var sample = samples[0];
+
+  if (sample.dataMask !== 1 || [3, 8, 9, 10, 11].includes(sample.SCL)) {
+    return [NaN];
+  }
+
   var b03_norm = normalize(sample.B03, 0, 0.253061520471542);
   var b04_norm = normalize(sample.B04, 0, 0.290393577911328);
   var b05_norm = normalize(sample.B05, 0, 0.305398915248555);
@@ -28,10 +35,8 @@ function evaluatePixelOrig(samples) {
   var l2 = layer2(n1, n2, n3, n4, n5);
 
   var lai = denormalize(l2, 0.000319182538301, 14.4675094548151);
-  return {
-    default: [lai / 3]
-  }
-}
+  return [lai / 3];
+} 
 
 function neuron1(b03_norm,b04_norm,b05_norm,b06_norm,b07_norm,b8a_norm,b11_norm,b12_norm, viewZen_norm,sunZen_norm,relAzim_norm) {
   var sum =
@@ -144,11 +149,11 @@ function setup() {
     input: [{
       bands: [
           "B03","B04","B05","B06","B07","B8A","B11","B12",
-          "viewZenithMean","viewAzimuthMean","sunZenithAngles","sunAzimuthAngles","dataMask"
+          "viewZenithMean","viewAzimuthMean","sunZenithAngles","sunAzimuthAngles","dataMask","SCL"
       ]
     }],
     output: [
-        { id: "default", sampleType: "AUTO", bands: 1 },
+        { id: "default", sampleType: "FLOAT32", bands: 1 },
         { id: "dataMask", bands: 1 }
     ]
   }
@@ -156,6 +161,16 @@ function setup() {
 
 function evaluatePixel(sample, scene, metadata, customData, outputMetadata) {
   const result = evaluatePixelOrig([sample], [scene], metadata, customData, outputMetadata);
+
+  const laiValue = result[0];
+  
+  if (isNaN(laiValue)) {
+    return {
+      default: [NaN],
+      dataMask: [0]
+    }
+  }
+
   return {
     default: [result[Object.keys(result)[0]]],
     dataMask: [sample.dataMask]
@@ -163,38 +178,56 @@ function evaluatePixel(sample, scene, metadata, customData, outputMetadata) {
 }
 """
 
-async def get_lai(coordinates):
-    Token = await get_access_token()
+async def post_lai(coordinates, start_date, end_date):
+    end_date = add_month(end_date)
+
+    Token = await get_Copernicus_accessToken()
 
     async with httpx.AsyncClient(timeout=60.0) as client:
-        response = await client.post(
-          url = "https://sh.dataspace.copernicus.eu/api/v1/statistics",
+      response = await client.post(
+      url = "https://sh.dataspace.copernicus.eu/api/v1/process",
 
-          headers = {
-              "Authorization": f"Bearer {Token}",
-              "Content-Type": "application/json"
+      headers = {
+        "Authorization": f"Bearer {Token}",
+        "Content-Type": "application/json",
+        "Accept": "image/tiff"
+      },
+
+      json = {
+        "input": {
+          "bounds": {
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [coordinates]
+            },
+            "properties": { "crs": "http://www.opengis.net/def/crs/EPSG/0/4326" },
           },
-
-          json = {
-              "input": {
-                  "bounds": {
-                      "geometry": {
-                          "type": "Polygon",
-                          "coordinates": [coordinates]
-                      },
-                      "properties": {"crs": "http://www.opengis.net/def/crs/EPSG/0/4326"}
-                  },
-                  "data": [{"type": "sentinel-2-l2a"}],
+          "data": [{
+            "type": "sentinel-2-l2a",
+            "dataFilter": {
+              "timeRange": {
+                "from": f"{start_date}-01T00:00:00Z",
+                "to": f"{end_date}-01T00:00:00Z"
               },
-              "aggregation": {
-                  "timeRange": {
-                      "from": "2025-01-01T00:00:00Z",
-                      "to": "2025-02-01T00:00:00Z"
-                  },
-                  "aggregationInterval": {"of": "P1D"},
-                  "evalscript": evalscript
-              }
-          }
-        )
+              "maxCloudCoverage": 30,
+              "mosaickingOrder": "leastCC",
+            }
+          }]
+        },
+        "output": {
+          "width": 512,
+          "height": 512,
+          "responses": [
+            {
+                "identifier": "default",
+                "format": {
+                    "type": "image/tiff"
+                }
+            }
+        ]
+      },
+        "evalscript": evalscript
+      }
+    )
 
-    return response.json()
+    return response.content
